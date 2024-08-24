@@ -1,6 +1,3 @@
-from django.shortcuts import render
-
-# Create your views here.
 from django.shortcuts import render, redirect
 from .models import *
 
@@ -56,3 +53,29 @@ def show_details(request, id):
     context = {}
     context['trainee'] = Trainee.objects.get(pk=id)
     return render(request, 'trainee/details.html', context)
+
+from .forms import NewTrainee
+
+def create_trainee_form(request):
+    context = {}
+    form = NewTrainee()
+    context['form'] = form
+    if request.method == 'POST':
+        form = NewTrainee(request.POST, request.FILES)
+        if form.is_valid():
+            Trainee.objects.create(
+            first_name=form.cleaned_data['first_name'],
+            image=form.cleaned_data['image'],
+            last_name=form.cleaned_data['last_name'],
+            gender=form.cleaned_data['gender'],
+            birth_data=form.cleaned_data['birth_date'],
+            address=form.cleaned_data['address'],
+            phone=form.cleaned_data['phone'],
+            email=form.cleaned_data['email'],
+            trackobj=Track.objects.get(pk=form.cleaned_data['track'])
+            )
+            return redirect('list_trainee')
+        else:
+            print(form.errors)
+    
+    return render(request, 'trainee/create_form.html', context)

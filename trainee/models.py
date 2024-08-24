@@ -6,6 +6,7 @@ from track.models import *
 class Trainee(models.Model):
     trainee_id = models.AutoField(primary_key=True)
     first_name = models.CharField()
+    image = models.ImageField(upload_to='trainee/images', blank=True, null=True)
     last_name = models.CharField()
     gender = models.CharField(max_length=10, null=True)
     birth_data = models.DateField(null=True)
